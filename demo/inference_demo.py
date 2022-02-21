@@ -31,7 +31,8 @@ print("The Keys of the data sample are:", data_keys)
 # %%
 pcd = './data/nuscenes/samples/LIDAR_TOP/n008-2018-08-01-15-16-36-0400__LIDAR_TOP__1533151603547590.pcd.bin'
 result, data = inference_detector(model, pcd)
-show_result_meshlab(data, result, show=False, out_dir='out_nus')
 
 # %%
+show_result_meshlab(data, result, show=False, out_dir='out_nus')
+
 # %%

@@ -478,12 +478,22 @@ evaluation = dict(
 voxel_size = [0.1, 0.1, 0.2]
 model = dict(
     type='CenterPoint',
+    # pts: List[torch.Tensor([N, 5])]
+    # N is the number of points
+    # for each keyframe, using the Voxelization method to generate the voxel.
     pts_voxel_layer=dict(
         max_num_points=10,
         voxel_size=[0.1, 0.1, 0.2],
         max_voxels=(90000, 120000),
         point_cloud_range=[-51.2, -51.2, -5.0, 51.2, 51.2, 3.0]),
+    # voxels: Torch.Tensor([num_points, 10, 5])
+    # 10 is the max points in each voxel
+    # 5 is the dimension of each voxel
+    # num_points is the number of points in each voxel
     pts_voxel_encoder=dict(type='HardSimpleVFE', num_features=5),
+    # voxel_features: Torch.Tensor([num_points, 5])
+    # in centerPoint, using the hardSimpleVFE to encode the voxel.
+    # hardSimpleVFE simply average the points in each voxel.
     pts_middle_encoder=dict(
         type='SparseEncoder',
         in_channels=5,
@@ -494,6 +504,8 @@ model = dict(
                                                                       128)),
         encoder_paddings=((0, 0, 1), (0, 0, 1), (0, 0, [0, 1, 1]), (0, 0)),
         block_type='basicblock'),
+    # x: torch.Tensor([1, 256, 128, 128])
+    # this is the SpareEncoder output. in centerPoint, using the SpareEncoder to encode the voxel.
     pts_backbone=dict(
         type='SECOND',
         in_channels=256,
@@ -510,6 +522,8 @@ model = dict(
         norm_cfg=dict(type='BN', eps=0.001, momentum=0.01),
         upsample_cfg=dict(type='deconv', bias=False),
         use_conv_for_no_stride=True),
+    # x: List[torch.Tensor([1, 512, 128, 128])]
+    # current x is the output of the SECONDFPN.
     pts_bbox_head=dict(
         type='CenterHead',
         in_channels=512,
